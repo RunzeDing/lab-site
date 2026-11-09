@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ABR Lab — Aerial and Bionic Robotics Laboratory</title>
+<meta name="description" content="Aerial and Bionic Robotics Laboratory (ABR Lab), School of Automation, Southeast University. Research on aerial robotics, hybrid locomotion and bioinspired intelligent mechanisms." />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="ABR Lab — Aerial and Bionic Robotics Laboratory" />
+<meta property="og:description" content="Aerial and Bionic Robotics Laboratory, School of Automation, Southeast University. Aerial robots, hybrid locomotion and bioinspired intelligent mechanisms." />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232563eb'/%3E%3Ctext x='32' y='43' font-size='24' font-family='Arial' font-weight='bold' text-anchor='middle' fill='white'%3EABR%3C/text%3E%3C/svg%3E" />
+<style>
+  :root{
+    --ink:#0b1220; --muted:#5b6575; --line:#e7eaf1; --bg:#ffffff;
+    --surface:#f6f8fb; --accent:#2563eb; --accent-2:#0ea5e9;
+    --accent-soft:#eaf1ff; --dark:#0b1220; --radius:16px;
+    --shadow:0 1px 2px rgba(16,24,40,.04), 0 8px 24px -12px rgba(16,24,40,.12);
+    --font:'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--font);color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  img{display:block;max-width:100%}
+  .container{max-width:1100px;margin:0 auto;padding:0 24px}
+
+  /* header */
+  .site-header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.86);backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--line)}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;height:66px}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:700;font-size:17px;color:var(--ink)}
+  .brand:hover{text-decoration:none}
+  .logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;display:grid;place-items:center;font-weight:800;font-size:15px;letter-spacing:.5px}
+  .brand small{display:block;font-weight:500;font-size:11.5px;color:var(--muted);letter-spacing:.02em;margin-top:-3px}
+  .nav{display:flex;align-items:center;gap:2px}
+  .nav a{padding:7px 13px;border-radius:9px;color:#374151;font-weight:550;font-size:14.5px}
+  .nav a:hover{background:var(--surface);text-decoration:none;color:var(--ink)}
+  .nav a.active{background:var(--accent-soft);color:var(--accent)}
+  .nav-burger{display:none;background:none;border:1px solid var(--line);border-radius:9px;width:40px;height:38px;font-size:18px;cursor:pointer}
+
+  /* hero — 浅色 */
+  .hero{background:linear-gradient(180deg,#fbfcfe 0%, #ffffff 100%);border-bottom:1px solid var(--line);overflow:hidden;position:relative}
+  .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(900px 420px at 82% -8%, rgba(37,99,235,.10), transparent 55%), radial-gradient(700px 360px at -8% 110%, rgba(14,165,233,.10), transparent 55%);pointer-events:none}
+  .hero-inner{padding:76px 0 72px;position:relative}
+  .hero-center{text-align:center;display:flex;flex-direction:column;align-items:center}
+  .hero-center .hero-tags{justify-content:center}
+  .hero-center .hero-actions{justify-content:center}
+  .hero-head{display:flex;align-items:stretch;justify-content:flex-start;gap:24px}
+  .hero-titles{min-width:0}
+  .hero-affil{font-size:17px;font-weight:650;color:var(--accent);margin-top:14px;letter-spacing:.01em}
+  .hero-logo{flex:none;width:108px;border:2px dashed #cbd5e1;border-radius:16px;background:var(--surface);display:grid;place-items:center;color:#94a3b8;font-weight:600;font-size:12px;letter-spacing:.08em}
+  .hero .kicker{display:inline-flex;align-items:center;gap:8px;background:var(--accent-soft);color:var(--accent);border:1px solid #dbe7ff;padding:5px 12px;border-radius:999px;font-size:12.5px;font-weight:600;letter-spacing:.04em;margin-bottom:22px}
+  .hero h1{font-size:50px;line-height:1.08;letter-spacing:-.02em;font-weight:760;color:var(--ink)}
+  .hero h1 .grad{background:linear-gradient(90deg,#2563eb,#0ea5e9);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p.lead{margin-top:20px;max-width:660px;font-size:17.5px;color:var(--muted)}
+  .hero-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+  .hero-tags a{font-size:13px;font-weight:600;color:#374151;background:#fff;border:1px solid var(--line);padding:6px 14px;border-radius:999px;transition:.14s}
+  .hero-tags a:hover{text-decoration:none;border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+  .hero-actions{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:11px;font-weight:600;font-size:14.5px;border:1px solid transparent;cursor:pointer;transition:.16s}
+  .btn:hover{text-decoration:none}
+  .btn-primary{background:var(--dark);color:#fff}
+  .btn-primary:hover{background:#1e293b}
+  .btn-ghost{background:#fff;border-color:var(--line);color:#374151}
+  .btn-ghost:hover{background:var(--surface);border-color:#d6dbe6}
+
+  /* sections */
+  main{padding-bottom:60px}
+  .section{padding:52px 0 8px}
+  .section-head{display:flex;align-items:end;justify-content:space-between;margin-bottom:22px;gap:16px}
+  .section-title{font-size:22px;font-weight:720;letter-spacing:-.01em}
+  .section-sub{color:var(--muted);font-size:14px;margin-top:3px}
+  .see-all{font-size:14px;font-weight:600;white-space:nowrap}
+
+  /* cards grid */
+  .grid{display:grid;gap:18px}
+  .grid.members{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+  .grid.research{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+  .card{background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);transition:transform .18s, box-shadow .18s}
+  .card:hover{transform:translateY(-3px);box-shadow:0 2px 4px rgba(16,24,40,.05), 0 16px 36px -14px rgba(16,24,40,.2)}
+  .card h3{font-size:16.5px;font-weight:680}
+  .card p{color:var(--muted);font-size:14px;margin-top:8px}
+  .area-icon{width:42px;height:42px;border-radius:12px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-size:20px;margin-bottom:14px}
+
+  /* member card */
+  .member-card{display:flex;flex-direction:column;gap:10px}
+  .member-photo{aspect-ratio:1/1;border-radius:14px;overflow:hidden;background:var(--surface);border:1px solid var(--line)}
+  .member-photo .avatar{width:100%;height:100%;border-radius:0;font-size:46px;object-fit:cover}
+  .avatar{width:62px;height:62px;border-radius:16px;flex:none;display:grid;place-items:center;color:#fff;font-weight:700;font-size:19px;background-size:cover;background-position:center}
+  .member-card h3{font-size:16.5px;line-height:1.25}
+  .member-card .role{color:var(--muted);font-size:13px;margin-top:2px}
+  .pi-list{display:flex;flex-direction:column;gap:18px;margin-bottom:6px}
+  .pi-card{display:flex;gap:28px;align-items:flex-start;flex-wrap:wrap;padding:28px}
+  .pi-card .avatar{width:150px;height:150px;border-radius:18px;font-size:44px;object-fit:cover}
+  .badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:650;padding:2px 9px;border-radius:999px;letter-spacing:.02em}
+  .badge.PI{background:#fef3c7;color:#b45309}
+  .badge.PhD{background:var(--accent-soft);color:var(--accent)}
+  .badge.Master{background:#e7f7ee;color:#0f8a4f}
+  .badge.Visiting{background:#f3e8ff;color:#7c3aed}
+  .badge.Undergrad{background:#f1f5f9;color:#475569}
+  .badge.Alumni{background:#f1f5f9;color:#94a3b8}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+  .tag{font-size:12px;color:#475569;background:var(--surface);border:1px solid var(--line);padding:2px 9px;border-radius:7px}
+  .member-links{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:auto;padding-top:6px;font-size:12.5px}
+  .member-links a{color:#475569;font-weight:550}
+  .member-links a:hover{color:var(--accent)}
+  .member-links a.email-icon{display:inline-flex;align-items:center;vertical-align:middle}
+  .member-links a.email-icon svg{width:15px;height:15px}
+
+  /* filters */
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+  .filter{font-size:13px;font-weight:600;padding:6px 14px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:#475569;cursor:pointer}
+  .filter.on{background:var(--dark);color:#fff;border-color:var(--dark)}
+
+  /* publications */
+  .pub-list{display:flex;flex-direction:column;gap:14px}
+  .pub-item{display:flex;gap:18px;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);transition:box-shadow .18s}
+  .pub-item:hover{box-shadow:0 2px 4px rgba(16,24,40,.05), 0 18px 40px -14px rgba(16,24,40,.18)}
+  .pub-main{flex:1;min-width:0}
+  .pub-title{font-size:16px;font-weight:680;line-height:1.4}
+  .pub-title a{color:var(--ink)}
+  .pub-title a:hover{color:var(--accent)}
+  .pub-authors{font-size:13.5px;color:var(--muted);margin-top:6px}
+  .pub-authors b{color:#1f2937;font-weight:650}
+  .pub-venue{font-size:13px;color:#6b7280;margin-top:4px}
+  .pub-venue .vj{color:#334155;font-weight:600;font-style:italic}
+  .pub-venue .type{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;padding:1px 8px;border-radius:6px;margin-right:8px;vertical-align:1px}
+  .type.journal{background:#e7f7ee;color:#0f8a4f}
+  .type.conference{background:var(--accent-soft);color:var(--accent)}
+  .type.preprint{background:#f3e8ff;color:#7c3aed}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+  .chip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;padding:5px 11px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:#374151;transition:.14s}
+  .chip:hover{text-decoration:none;border-color:var(--accent);color:var(--accent)}
+  .chip svg{width:13px;height:13px}
+  .chip.bilibili:hover{color:#fb7299;border-color:#fb7299}
+  .chip.code:hover{color:#24292f;border-color:#24292f}
+  .pub-media{width:400px;flex:none;border-radius:12px;overflow:hidden;border:1px solid var(--line);position:relative;cursor:pointer;align-self:center;aspect-ratio:16/10;background:var(--surface)}
+  .pub-media .thumb{width:100%;height:100%;display:grid;place-items:center;font-size:28px}
+  .pub-media .play{position:absolute;inset:0;display:grid;place-items:center;color:#fff}
+  .pub-media .play span{width:40px;height:40px;border-radius:50%;background:rgba(11,18,32,.55);display:grid;place-items:center}
+  .pub-media .play svg{width:18px;height:18px}
+  .pub-metrics{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+  .metric{display:inline-flex;flex-direction:column;gap:1px;padding:7px 13px;border-radius:10px;background:var(--surface);border:1px solid var(--line)}
+  .metric b{font-size:16px;font-weight:720;color:var(--ink);line-height:1.1}
+  .metric span{font-size:11px;color:var(--muted);letter-spacing:.02em}
+  .year-head{display:flex;align-items:center;gap:14px;font-size:19px;font-weight:720;color:var(--ink);margin:30px 0 14px}
+  .year-head::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  /* research detail — 双栏横屏 */
+  .rdetail{display:grid;grid-template-columns:1.05fr 1fr;gap:36px;align-items:start}
+  .rdetail .rtext h1{font-size:30px;font-weight:750;letter-spacing:-.02em;margin-bottom:8px}
+  .rdetail .rtext .rblurb{color:var(--muted);font-size:15px;margin-bottom:18px}
+  .rdetail .rtext h2{font-size:17px;margin:24px 0 8px}
+  .rdetail .rtext p{color:#374151;margin:8px 0}
+  .rdetail .rtext ul{margin:8px 0 8px 20px}
+  .rdetail .rtext li{margin:6px 0;color:#374151}
+  .rback{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:600;color:var(--muted);margin-bottom:18px}
+  .rback:hover{color:var(--accent);text-decoration:none}
+  .media-col{display:flex;flex-direction:column;gap:16px}
+  .media-figure{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--surface);box-shadow:var(--shadow)}
+  .media-figure .mmedia{aspect-ratio:16/10;display:grid;place-items:center;font-size:38px;position:relative;overflow:hidden}
+  .media-figure .mmedia img{width:100%;height:100%;object-fit:cover;cursor:zoom-in}
+  .media-figure .mmedia iframe{width:100%;height:100%;border:0;background:#000}
+  .media-figure .mplay{position:absolute;inset:0;margin:auto;width:52px;height:52px;border-radius:50%;background:rgba(11,18,32,.55);display:grid;place-items:center;color:#fff}
+  .media-figure .mplay svg{width:22px;height:22px}
+  .media-figure figcaption{padding:11px 15px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);background:#fff}
+
+  /* news */
+  .news-list{display:flex;flex-direction:column;gap:0}
+  .news-item{display:flex;gap:20px;padding:18px 4px;border-bottom:1px solid var(--line)}
+  .news-item:last-child{border-bottom:none}
+  .news-date{width:110px;flex:none;font-size:13px;color:var(--muted);padding-top:2px}
+  .news-body h3{font-size:16px;font-weight:650}
+  .news-body p{color:var(--muted);font-size:14px;margin-top:5px;max-width:720px}
+  .news-tag{display:inline-block;font-size:11.5px;font-weight:700;padding:1px 8px;border-radius:6px;background:var(--accent-soft);color:var(--accent);margin-bottom:6px}
+
+  /* markdown page */
+  .md h1{font-size:30px;margin:8px 0 18px}
+  .md h2{font-size:20px;margin:26px 0 10px}
+  .md h3{font-size:16px;margin:18px 0 8px}
+  .md p{margin:10px 0;color:#374151}
+  .md ul,.md ol{margin:10px 0 10px 22px}
+  .md li{margin:5px 0}
+  .md code{background:var(--surface);border:1px solid var(--line);padding:1px 6px;border-radius:6px;font-size:13px}
+
+  .empty{color:var(--muted);font-size:14px;padding:24px 0;text-align:center;border:1px dashed var(--line);border-radius:var(--radius)}
+
+  footer{border-top:1px solid var(--line);background:var(--surface);padding:36px 0}
+  footer .container{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-size:13.5px;color:var(--muted)}
+
+  /* lightbox */
+  .lightbox{position:fixed;inset:0;z-index:100;background:rgba(8,12,20,.82);display:none;align-items:center;justify-content:center;padding:40px;backdrop-filter:blur(3px)}
+  .lightbox.open{display:flex}
+  .lightbox-box{max-width:900px;width:100%;border-radius:14px;overflow:hidden;background:#0b1220;box-shadow:0 30px 80px -20px rgba(0,0,0,.6);position:relative}
+  .lightbox-box img{width:100%;max-height:72vh;object-fit:contain;background:#0b1220}
+  .lightbox-box iframe{width:100%;height:70vh;border:0;display:block;background:#000}
+  .lightbox-box .ph{width:100%;height:60vh;display:grid;place-items:center;color:#c7d7f7;text-align:center;padding:40px}
+  .lightbox-close{position:absolute;top:14px;right:14px;width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.12);color:#fff;font-size:18px;cursor:pointer;line-height:1}
+
+  @media (max-width:760px){
+    .hero h1{font-size:32px}
+    .nav{display:none;position:absolute;top:66px;left:0;right:0;background:#fff;border-bottom:1px solid var(--line);flex-direction:column;padding:8px;gap:4px}
+    .nav.open{display:flex}
+    .nav-burger{display:block}
+    .pub-item{flex-direction:column}
+    .pub-media{width:100%;align-self:stretch}
+    .news-item{flex-direction:column;gap:4px}
+    .news-date{width:auto}
+    .rdetail{grid-template-columns:1fr}
+    .hero-head{flex-direction:column;align-items:flex-start;gap:18px}
+    .hero-logo{width:84px;height:84px}
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="#/">
+      <span class="logo" id="brand-logo">L</span>
+      <span><span id="brand-name">ABR Lab</span><small id="brand-affil">School of Automation, Southeast University</small></span>
+    </a>
+    <button class="nav-burger" id="burger" aria-label="menu">☰</button>
+    <nav class="nav" id="nav"></nav>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<footer>
+  <div class="container">
+    <span id="foot-brand">© 2026 ABR Lab · School of Automation, Southeast University</span>
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-box">
+    <button class="lightbox-close" id="lb-close">✕</button>
+    <div id="lb-content"></div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script>
+/* =====================================================================
+   数据从 data.js 加载（window.SITE_DATA）—— 日常维护用编辑器或直接改 data.js。
+   ===================================================================== */
+const SITE = SITE_DATA.site;
+
+const PAGES = SITE_DATA.pages;
+
+const MEMBERS = SITE_DATA.members;
+
+// 论文数据见 data.js → SITE_DATA.publications（结构化对象）
+
+const RESEARCH = SITE_DATA.research;
+
+const NEWS = SITE_DATA.news;
+
+const OPENINGS = SITE_DATA.openings;
+
+/* =====================================================================
+   渲染器（固定逻辑，一般无需修改）
+   ===================================================================== */
+const $  = (s)=>document.querySelector(s);
+const esc= (s)=>String(s??"").replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* ---- BibTeX 解析 ---- */
+function parseBib(text){
+  const out=[]; let i=0;
+  const s=text.replace(/^\s*%.*$/gm,"");
+  while(i<s.length){
+    const at=s.indexOf("@",i); if(at<0) break;
+    const m=s.slice(at).match(/^@(\w+)\s*\{\s*([^,\s{]+)\s*,/);
+    if(!m){ i=at+1; continue; }
+    const type=m[1].toLowerCase(), key=m[2];
+    let j=at+m[0].length, depth=1, end=-1;
+    for(let k=j;k<s.length;k++){
+      if(s[k]==="{")depth++;
+      else if(s[k]==="}"){
+        depth--;
+        if(depth===0){end=k;break;}
+      }
+    }
+    if(end<0) break;
+    const body=s.slice(j,end);
+    const fields={}; let k=0;
+    while(k<body.length){
+      const fm=body.slice(k).match(/^\s*([a-zA-Z0-9_-]+)\s*=\s*/);
+      if(!fm){ k++; continue; }
+      const name=fm[1].toLowerCase(); let p=k+fm[0].length; let val="";
+      if(body[p]==="{"){
+        let d=1,q=p+1; val="";
+        for(;q<body.length;q++){ if(body[q]==="{")d++; else if(body[q]==="}"){d--; if(d===0)break;} val+=body[q]; }
+        k=q+1;
+      }else if(body[p]==='"'){
+        let q=p+1; val="";
+        for(;q<body.length;q++){ if(body[q]==='"')break; val+=body[q]; }
+        k=q+1;
+      }else{
+        const w=body.slice(p).match(/^\s*([^,\s]+)/); val=w?w[1]:""; k=p+(w?w[0].length:1);
+      }
+      fields[name]=val.trim();
+      const cm=body.slice(k).match(/^\s*,/); if(cm) k+=cm[0].length;
+    }
+    out.push({type,key,fields});
+    i=end+1;
+  }
+  return out;
+}
+
+const AUTHOR_HIGHLIGHT = [];
+
+function parseAuthors(raw){
+  const out=[]; let cur="", depth=0;
+  for(const ch of raw){ if(ch==="{")depth++; else if(ch==="}")depth--; if(ch==="and"&&depth===0){/*naive*/} }
+  // split on " and "
+  const parts=String(raw).split(/\s+and\s+/);
+  for(let p of parts){
+    p=p.trim().replace(/[{}]/g,"").replace(/\s+/g," ");
+    if(!p) continue;
+    let first=p,last="";
+    const c=p.split(",");
+    if(c.length>=2){ last=c[0].trim(); first=c.slice(1).join(",").trim(); }
+    else{ const w=p.split(" "); if(w.length>=2){ last=w[w.length-1]; first=w.slice(0,-1).join(" ");} }
+    const name=(first+" "+last).trim();
+    out.push(name);
+  }
+  return out;
+}
+
+function authorHTML(raw){
+  return parseAuthors(raw).map(n=>{
+    const hit=AUTHOR_HIGHLIGHT.some(h=>n.includes(h)||h.includes(n));
+    return hit?`<b>${esc(n)}</b>`:esc(n);
+  }).join(", ");
+}
+
+function linkChips(pub){
+  const f=pub.fields, chips=[];
+  const doi=f.doi||f.url;
+  if(doi) chips.push({kind:"paper", label:"Paper", href:doi.startsWith("http")?doi:"https://doi.org/"+doi});
+  if(f.github) chips.push({kind:"code", label:"Code", href:f.github});
+  if(f.bilibili) chips.push({kind:"bilibili", label:"Video", href:f.bilibili});
+  if(f.project) chips.push({kind:"paper", label:"Project", href:f.project});
+  return chips;
+}
+
+const ICONS = {
+  paper:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M9 13h6M9 17h6"/></svg>',
+  code:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.09.68-.22.68-.49 0-.24-.01-.87-.01-1.7-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.5-1.11-1.5-.91-.63.07-.62.07-.62 1 .07 1.53 1.06 1.53 1.06.89 1.57 2.34 1.12 2.91.85.09-.66.35-1.12.63-1.38-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.7 0 0 .84-.28 2.75 1.05a9.36 9.36 0 0 1 5 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.4.2 2.44.1 2.7.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.81-4.57 5.06.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.59.69.49A10.03 10.03 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z"/></svg>',
+  bilibili:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.8 4.6a2 2 0 0 1 1.4.6c.4.4.6.9.6 1.4v9a2 2 0 0 1-.6 1.4l-4.6 4.6a2 2 0 0 1-2.8 0l-4.6-4.6a2 2 0 0 1-.6-1.4v-9c0-.5.2-1 .6-1.4l4.6-4.6a2 2 0 0 1 2.8 0z"/><path d="M12 9v6M9.5 11.2v1.6M14.5 11.2v1.6" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>',
+  pdf:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>',
+  play:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>',
+  email:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>',
+  scholar:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/></svg>',
+  site:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>',
+  orcid:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><text x="12" y="15.5" font-size="8.5" text-anchor="middle" font-weight="800" fill="currentColor" stroke="none">iD</text></svg>',
+  scopus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5.5" rx="8" ry="3"/><path d="M4 5.5V12c0 1.66 3.58 3 8 3s8-1.34 8-3V5.5"/><path d="M4 12v6.5c0 1.66 3.58 3 8 3s8-1.34 8-3V12"/></svg>',
+};
+
+function avatarHTML(m){
+  if(m.avatar) return `<img class="avatar" src="${esc(m.avatar)}" alt="">`;
+  let h=0; for(const c of m.name) h=(h*31+c.charCodeAt(0))>>>0;
+  const hue=h%360, ini=m.name.split(/\s+/).map(w=>w[0]).slice(0,2).join("").toUpperCase();
+  return `<div class="avatar" style="background:linear-gradient(135deg,hsl(${hue},62%,48%),hsl(${(hue+40)%360},62%,40%))">${esc(ini)}</div>`;
+}
+
+function memberLinks(m){
+  const items=[];
+  if(m.email) items.push(`<a class="email-icon" href="mailto:${esc(m.email)}" title="${esc(m.email)}" aria-label="Email">${ICONS.email}</a>`);
+  if(m.links?.scholar) items.push(`<a href="${esc(m.links.scholar)}" target="_blank" rel="noopener">Google Scholar</a>`);
+  if(m.links?.orcid) items.push(`<a href="${esc(m.links.orcid)}" target="_blank" rel="noopener">ORCID</a>`);
+  if(m.links?.scopus) items.push(`<a href="${esc(m.links.scopus)}" target="_blank" rel="noopener">Scopus</a>`);
+  if(m.links?.github) items.push(`<a href="${esc(m.links.github)}" target="_blank" rel="noopener">GitHub</a>`);
+  if(m.links?.site) items.push(`<a href="${esc(m.links.site)}" target="_blank" rel="noopener">Chinese Website</a>`);
+  return items.join(' · ');
+}
+
+/* ---- 路由与页面渲染 ---- */
+const app=$("#app"), nav=$("#nav");
+
+function routeSegs(){ const h=location.hash.replace(/^#\/?/,""); const s=h.split("/").filter(Boolean); return s.length?s:["home"]; }
+
+function buildNav(){
+  const cur=routeSegs()[0];
+  nav.innerHTML=PAGES.map(p=>`<a href="#/${p.id}" data-nav="${p.id}" class="${p.id===cur?'active':''}">${esc(p.label)}</a>`).join("");
+}
+
+function pageTitle(id){ const p=PAGES.find(x=>x.id===id); return p?p.label:id; }
+function pageSub(id){ const p=PAGES.find(x=>x.id===id); return p&&p.subtitle?`<div class="section-sub">${esc(p.subtitle)}</div>`:""; }
+
+function heroHTML(){
+  const kicker=SITE.tagline?`<span class="kicker">${esc(SITE.tagline)}</span>`:"";
+  const affil=SITE.affiliation?`<p class="hero-affil">${esc(SITE.affiliation)}</p>`:"";
+  const lead=SITE.lead?`<p class="lead">${esc(SITE.lead)}</p>`:"";
+  return `<section class="hero"><div class="container hero-inner hero-center">
+    ${kicker}
+    <h1>${esc(SITE.fullName)}</h1>
+    ${affil}
+    ${lead}
+    <div class="hero-tags">${RESEARCH.map(r=>`<a href="#/research/${r.id}">${esc(r.title)}</a>`).join("")}</div>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#/research">Explore Research</a>
+      <a class="btn btn-ghost" href="#/publications">View Publications</a>
+    </div>
+  </div></section>`;
+}
+
+function memberCard(m){
+  return `<div class="card member-card">
+    <div class="member-photo">${avatarHTML(m)}</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:2px">
+      <h3>${esc(m.name)}</h3><span class="badge ${esc(m.degree)}">${esc(m.degree)}</span>
+    </div>
+    <div class="role" style="margin-top:-6px">${esc(m.role)}</div>
+    <div class="tags">${m.directions.map(d=>`<span class="tag">${esc(d)}</span>`).join("")}</div>
+    <p style="margin-top:0">${esc(m.bio)}</p>
+    <div class="member-links">${memberLinks(m)}</div>
+  </div>`;
+}
+
+function pubItem(pub, hideMedia){
+  const f=pub.fields;
+  const gi=PUBS.indexOf(pub);
+  const typeMap={article:"journal",inproceedings:"conference",misc:"preprint"};
+  const t=typeMap[pub.type]||"journal";
+  const tlabel={journal:"J",conference:"C",preprint:"P"}[t];
+  const hasMedia=hideMedia?false:!!(f.video||f.image);
+  const mediaKind=f.video?"video":"image";
+  const thumbTone=["#dbeafe","#dcfce7","#fef3c7","#fae8ff","#ffedd5"][gi%5];
+  const thumbURL=(f.thumb&&f.thumb!=="true")?f.thumb:((f.image&&f.image!=="true")?f.image:null);
+  const media=`<div class="pub-media" data-media="${gi}">
+      ${thumbURL?`<img src="${esc(thumbURL)}" alt="" style="width:100%;height:100%;object-fit:cover">`:`<div class="thumb" style="background:linear-gradient(135deg,${thumbTone},#ffffff)">${mediaKind==="video"?'▶️':'🖼️'}</div>`}
+      ${mediaKind==="video"?'<div class="play"><span>'+ICONS.play+'</span></div>':''}
+    </div>`;
+  const metricsHTML = f.metrics ? `<div class="pub-metrics">${f.metrics.split("|").map(m=>{const s=m.trim().split(":");const label=(s.shift()||"").trim();const value=s.join(":").trim();return `<div class="metric"><b>${esc(value)}</b><span>${esc(label)}</span></div>`;}).join("")}</div>` : "";
+  return `<div class="pub-item" data-pub="${gi}">
+    <div class="pub-main">
+      <div class="pub-title"><a href="${f.doi?(f.doi.startsWith('http')?f.doi:'https://doi.org/'+f.doi):'#publications'}">${esc(f.title)}</a></div>
+      <div class="pub-authors">${authorHTML(f.author||"")}</div>
+      <div class="pub-venue"><span class="type ${t}">${tlabel}</span><span class="vj">${esc(f.journal||f.booktitle||"")}</span>${f.volume?`, vol. ${esc(f.volume)}`:""}${f.pages?`, pp. ${esc(f.pages)}`:""} · ${esc(f.year||"")}${f.note?` (${esc(f.note)})`:""}</div>
+      ${metricsHTML}
+      <div class="chips">${linkChips(pub).map(c=>`<a class="chip ${c.kind}" href="${esc(c.href)}" target="_blank" rel="noopener">${ICONS[c.kind]||ICONS.paper}${esc(c.label)}</a>`).join("")}</div>
+    </div>
+    ${hasMedia?media:""}
+  </div>`;
+}
+
+function sortedNews(){ return [...NEWS].sort((a,b)=>(b.date||"").localeCompare(a.date||"")); }
+
+function renderHome(){
+  const latestNews=sortedNews().slice(0,3), latestPubs=PUBS.slice(0,3);
+  app.innerHTML=heroHTML()+`
+  <div class="container">
+    <section class="section">
+      <div class="section-head"><div><div class="section-title">Latest News</div></div><a class="see-all" href="#/news">All news →</a></div>
+      <div class="news-list">${latestNews.map(n=>`<div class="news-item"><div class="news-date">${esc(n.date)}</div><div class="news-body"><span class="news-tag">${esc(n.tag)}</span><h3>${esc(n.title)}</h3><p>${esc(n.body)}</p></div></div>`).join("")}</div>
+    </section>
+    <section class="section">
+      <div class="section-head"><div><div class="section-title">Recent Publications</div></div><a class="see-all" href="#/publications">All publications →</a></div>
+      <div class="pub-list">${latestPubs.map(p=>pubItem(p)).join("")}</div>
+    </section>
+    <section class="section">
+      <div class="section-head"><div><div class="section-title">Research Directions</div></div><a class="see-all" href="#/research">More →</a></div>
+      <div class="grid research">${RESEARCH.map(r=>`<a class="card" href="#/research/${r.id}" style="display:block;color:inherit"><div class="area-icon">${r.icon}</div><h3>${esc(r.title)}</h3><p>${esc(r.blurb)}</p></a>`).join("")}</div>
+    </section>
+  </div>`;
+}
+
+function renderNews(){
+  app.innerHTML=`<div class="container"><section class="section" style="padding-top:40px">
+    <div class="section-head"><div><div class="section-title">${pageTitle("news")}</div>${pageSub("news")}</div></div>
+    <div class="news-list">${sortedNews().map(n=>`<div class="news-item"><div class="news-date">${esc(n.date)}</div><div class="news-body"><span class="news-tag">${esc(n.tag)}</span><h3>${esc(n.title)}</h3><p>${esc(n.body)}</p></div></div>`).join("")||'<div class="empty">No news yet.</div>'}</div>
+  </section></div>`;
+}
+
+function renderMembers(){
+  const degreeFilter=state.degreeFilter||"All";
+  const degrees=["All","PI","PhD","Master","Visiting","Undergrad","Alumni"];
+  const labels={PI:"Principal Investigator",PhD:"PhD Students",Master:"Master Students",Visiting:"Visiting Scholars",Undergrad:"Undergraduates",Alumni:"Alumni"};
+  const list=MEMBERS.filter(m=>degreeFilter==="All"||m.degree===degreeFilter);
+  const groups=degrees.filter(d=>d!=="All").map(d=>({degree:d,members:list.filter(m=>m.degree===d)})).filter(g=>g.members.length);
+  app.innerHTML=`<div class="container"><section class="section" style="padding-top:40px">
+    <div class="section-head"><div><div class="section-title">${pageTitle("members")}</div>${pageSub("members")}</div></div>
+    <div class="filters">${degrees.map(d=>`<button class="filter ${d===degreeFilter?'on':''}" data-degree="${d}">${d}</button>`).join("")}</div>
+    ${groups.map(g=>{
+      const body=g.degree==="PI"?g.members.map(piCard).join(""):`<div class="grid members">${g.members.map(memberCard).join("")}</div>`;
+      return `<h2 class="year-head">${esc(labels[g.degree]||g.degree)}</h2>${body}`;
+    }).join("")||'<div class="empty">No members.</div>'}
+  </section></div>`;
+}
+
+function piCard(m){
+  return `<div class="card pi-card">
+    <div class="pi-photo">${avatarHTML(m)}</div>
+    <div class="pi-info">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="font-size:22px">${esc(m.name)}</h3><span class="badge ${esc(m.degree)}">${esc(m.degree)}</span></div>
+      <div class="role" style="font-size:15px;font-weight:600;color:#1f2937;margin-top:6px">${esc(m.role)}</div>
+      ${m.honor?`<div style="margin-top:4px;color:#b45309;font-weight:600;font-size:13.5px">${esc(m.honor)}</div>`:""}
+      ${m.education?`<p style="color:#374151;margin-top:12px;max-width:780px">${esc(m.education)}</p>`:""}
+      ${m.research?`<p style="color:#374151;margin-top:8px;max-width:780px">${esc(m.research)}</p>`:""}
+      ${m.directions?.length?`<div class="tags" style="margin-top:12px">${m.directions.map(d=>`<span class="tag">${esc(d)}</span>`).join("")}</div>`:""}
+      <div class="member-links" style="margin-top:14px">${memberLinks(m)}</div>
+    </div>
+  </div>`;
+}
+
+function renderPublications(){
+  const years=[...new Set(PUBS.map(p=>p.fields.year).filter(Boolean))].sort().reverse();
+  app.innerHTML=`<div class="container"><section class="section" style="padding-top:40px">
+    <div class="section-head"><div><div class="section-title">${pageTitle("publications")}</div>${pageSub("publications")}</div></div>
+    ${years.map(y=>`<h2 class="year-head">${esc(y)}</h2><div class="pub-list">${PUBS.filter(p=>p.fields.year===y).map(p=>pubItem(p)).join("")}</div>`).join("")||'<div class="empty">No publications.</div>'}
+  </section></div>`;
+}
+
+function renderResearch(){
+  app.innerHTML=`<div class="container"><section class="section" style="padding-top:40px">
+    <div class="section-head"><div><div class="section-title">${pageTitle("research")}</div>${pageSub("research")}</div></div>
+    <div class="grid research">${RESEARCH.map(r=>`<a class="card" href="#/research/${r.id}" style="display:block;color:inherit"><div class="area-icon">${r.icon}</div><h3>${esc(r.title)}</h3><p>${esc(r.blurb)}</p><div style="margin-top:14px;font-size:13px;font-weight:600;color:var(--accent)">进入方向 →</div></a>`).join("")}</div>
+  </section></div>`;
+}
+
+function embedSrc(url){
+  if(!url) return url;
+  const sep = url.includes("?") ? "&" : "?";
+  if(/bilibili/.test(url)) return url + sep + "autoplay=1&muted=1";
+  if(/youtube|youtu\.be/.test(url)) return url + sep + "autoplay=1&mute=1";
+  return url;
+}
+
+function mediaFigure(m, i){
+  if(m.type==="video"){
+    const isEmbed=/player|youtube\.com\/embed|youtu\.be|player\.bilibili/.test(m.src||"");
+    const inner = (m.src && isEmbed)
+      ? `<iframe src="${esc(embedSrc(m.src))}" allow="autoplay; fullscreen" allowfullscreen></iframe>`
+      : `<div style="position:absolute;inset:0;background:linear-gradient(135deg,#0b1220,#12264d)"></div><div class="mplay">${ICONS.play}</div>`;
+    return `<figure class="media-figure"><div class="mmedia" data-rmedia="${i}">${inner}</div><figcaption>${esc(m.caption||"")}</figcaption></figure>`;
+  }
+  const inner = m.src
+    ? `<img src="${esc(m.src)}" alt="">`
+    : `<div style="width:100%;height:100%;display:grid;place-items:center;background:linear-gradient(135deg,#e2ecff,#f4f8ff)">🖼️</div>`;
+  return `<figure class="media-figure"><div class="mmedia" data-rmedia="${i}">${inner}</div><figcaption>${esc(m.caption||"")}</figcaption></figure>`;
+}
+
+function renderResearchDetail(r){
+  const related=PUBS.filter(p=>p.fields.area && p.fields.area.split(",").map(x=>x.trim()).includes(r.id));
+  const blurb=r.blurb?`<p class="rblurb">${esc(r.blurb)}</p>`:"";
+  const intro=r.intro?`<p>${esc(r.intro)}</p>`:"";
+  const points=(r.points&&r.points.length)?`<h2>Key results</h2><ul>${r.points.map(p=>`<li>${esc(p)}</li>`).join("")}</ul>`:"";
+  const relPub=related.length?`<h2>Related publications</h2><div class="pub-list" style="margin-top:6px">${related.map(p=>pubItem(p,true)).join("")}</div>`:"";
+  const media=(r.media&&r.media.length)?`<div class="media-col">${r.media.map(mediaFigure).join("")}</div>`:"";
+  app.innerHTML=`<div class="container"><section class="section" style="padding-top:32px">
+    <a class="rback" href="#/research">← All research</a>
+    <div class="rdetail">
+      <div class="rtext">
+        <div class="area-icon">${r.icon}</div>
+        <h1>${esc(r.title)}</h1>
+        ${blurb}
+        ${intro}
+        ${points}
+        ${relPub}
+      </div>
+      ${media}
+    </div>
+  </section></div>`;
+}
+
+function renderJoin(){
+  const en=OPENINGS.en||{}, zh=OPENINGS.zh||{};
+  function block(d, h, divider){
+    const has=d && (d.intro || (d.requirements&&d.requirements.length) || (d.yearly&&d.yearly.length) || d.undergrad);
+    if(!has) return "";
+    return `${divider?`<hr style="border:none;border-top:1px solid var(--line);margin:28px 0">`:""}
+    <div class="md">
+      ${h.title?`<h2>${esc(h.title)}</h2>`:""}
+      ${d.intro?`<p>${esc(d.intro)}</p>`:""}
+      ${(d.requirements&&d.requirements.length)?`<h3>${esc(h.req)}</h3><ol>${d.requirements.map(r=>`<li>${esc(r)}</li>`).join("")}</ol>`:""}
+      ${(d.yearly&&d.yearly.length)?`<div class="grid research" style="margin-top:10px">${d.yearly.map(o=>`<div class="card"><h3>${esc(o.title)}</h3><p>${esc(o.body)}</p></div>`).join("")}</div>`:""}
+      ${d.undergrad?`<h3>${esc(h.ug)}</h3><p>${esc(d.undergrad)}</p>`:""}
+    </div>`;
+  }
+  app.innerHTML=`<div class="container"><section class="section" style="padding-top:40px">
+    <div class="section-head"><div><div class="section-title">${pageTitle("positions")}</div>${pageSub("positions")}</div></div>
+    ${block(en, {title:"", req:"What we look for", ug:"Undergraduates"}, false)}
+    ${block(zh, {title:"招聘", req:"我们期待的能力", ug:"本科生"}, true)}
+  </section></div>`;
+}
+
+/* 极简 Markdown 渲染（供“新增页面”用） */
+function renderMD(md){
+  const html=[]; let inList=false, listType="";
+  const lines=String(md||"").replace(/\r/g,"").split("\n");
+  const inline=t=>esc(t)
+    .replace(/\*\*(.+?)\*\*/g,"<b>$1</b>")
+    .replace(/`(.+?)`/g,"<code>$1</code>")
+    .replace(/\[(.+?)\]\((https?:\/\/[^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+  const closeList=()=>{ if(inList){ html.push(listType); inList=false; } };
+  for(const ln of lines){
+    const h=ln.match(/^(#{1,3})\s+(.*)/);
+    if(h){ closeList(); html.push(`<h${h[1].length}>${inline(h[2])}</h${h[1].length}>`); continue; }
+    const ul=ln.match(/^\s*[-*]\s+(.*)/);
+    if(ul){ if(!inList||listType!=="<ul>"){ closeList(); html.push("<ul>"); inList=true; listType="</ul>"; } html.push(`<li>${inline(ul[1])}</li>`); continue; }
+    const ol=ln.match(/^\s*\d+\.\s+(.*)/);
+    if(ol){ if(!inList||listType!=="<ol>"){ closeList(); html.push("<ol>"); inList=true; listType="</ol>"; } html.push(`<li>${inline(ol[1])}</li>`); continue; }
+    closeList();
+    if(ln.trim()==="") continue;
+    html.push(`<p>${inline(ln)}</p>`);
+  }
+  closeList();
+  return html.join("");
+}
+
+function renderPage(id, sub){
+  const p=PAGES.find(x=>x.id===id);
+  if(!p){ app.innerHTML=`<div class="container"><div class="empty">Page not found.</div></div>`; return; }
+  if(id==="home") renderHome();
+  else if(id==="news") renderNews();
+  else if(id==="members") renderMembers();
+  else if(id==="publications") renderPublications();
+  else if(id==="research"){ const r=RESEARCH.find(x=>x.id===sub); if(r) renderResearchDetail(r); else renderResearch(); }
+  else if(id==="positions") renderJoin();
+  else app.innerHTML=`<div class="container"><section class="section" style="padding-top:40px"><div class="md">${renderMD(p.md)}</div></section></div>`;
+}
+
+function route(){ buildNav(); const s=routeSegs(); renderPage(s[0], s[1]); window.scrollTo({top:0}); bindDelegates(); }
+
+/* ---- 媒体展示窗 ---- */
+const lightbox=$("#lightbox"), lbContent=$("#lb-content");
+function openMedia(pub){
+  const f=pub.fields;
+  if(f.video){
+    const url=f.video;
+    const isEmbed=/player|youtube\.com\/embed|youtu\.be|player\.bilibili/.test(url);
+    lbContent.innerHTML = isEmbed
+      ? `<iframe src="${esc(embedSrc(url))}" allow="autoplay; fullscreen" allowfullscreen></iframe>`
+      : `<div class="ph"><div><div style="font-size:46px">🎬</div><p style="margin-top:14px;color:#9fb2d6">视频展示窗占位</p><p style="font-size:13px;margin-top:6px">替换 <code>video</code> 字段为 Bilibili/YouTube 的 embed 地址即可内嵌播放</p><p style="font-size:12px;color:#64748b;margin-top:8px">${esc(url)}</p></div></div>`;
+  } else {
+    const url=f.image&&f.image!=="true"?f.image:null;
+    lbContent.innerHTML = url
+      ? `<img src="${esc(url)}" alt="">`
+      : `<div class="ph"><div><div style="font-size:46px">🖼️</div><p style="margin-top:14px;color:#9fb2d6">论文图片展示窗占位</p><p style="font-size:13px;margin-top:6px">把 <code>image</code> 字段改为图片 URL 即可显示</p></div></div>`;
+  }
+  lightbox.classList.add("open");
+}
+function closeMedia(){ lightbox.classList.remove("open"); lbContent.innerHTML=""; }
+
+/* ---- 事件委托 ---- */
+function bindDelegates(){
+  app.onclick=e=>{
+    const media=e.target.closest(".pub-media");
+    if(media){ const i=+media.dataset.media; if(PUBS[i]) openMedia(PUBS[i]); return; }
+    const rimg=e.target.closest(".mmedia img");
+    if(rimg){ lbContent.innerHTML=`<img src="${esc(rimg.src)}" alt="">`; lightbox.classList.add("open"); return; }
+    const f=e.target.closest(".filter");
+    if(f){
+      if(f.dataset.degree!==undefined){ state.degreeFilter=f.dataset.degree; renderMembers(); bindDelegates(); }
+      if(f.dataset.year!==undefined){ state.yearFilter=f.dataset.year; renderPublications(); bindDelegates(); }
+    }
+  };
+}
+
+/* ---- 初始化 ---- */
+let PUBS=SITE_DATA.publications.slice();
+const state={degreeFilter:"All",yearFilter:"All"};
+
+const lg=$("#brand-logo"); lg.textContent=SITE.short; if(SITE.short.length>=3) lg.style.fontSize="12px";
+$("#brand-name").textContent=SITE.name;
+$("#brand-affil").textContent=SITE.affiliation;
+$("#foot-brand").textContent=`© 2026 ${SITE.name} · ${SITE.affiliation}`;
+document.title=`${SITE.name}`;
+
+window.addEventListener("hashchange",route);
+$("#burger").onclick=()=>nav.classList.toggle("open");
+$("#lb-close").onclick=closeMedia;
+lightbox.onclick=e=>{ if(e.target===lightbox) closeMedia(); };
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeMedia(); });
+
+route();
+</script>
+</body>
+</html>
